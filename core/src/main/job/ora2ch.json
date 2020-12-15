@@ -1,0 +1,47 @@
+{
+  "job": {
+    "content": [
+      {
+        "reader": {
+          "name": "oraclereader",
+          "parameter": {
+            "password": "ogg",
+            "username": "ogg",
+            "where": "",
+            "connection": [
+              {
+                "jdbcUrl": ["jdbc:oracle:thin:@10.158.5.84:1521:dbm"],
+                "querySql":
+                [
+                  "select nvl(to_char(outhospital_time,'yyyy-mm-dd hh:mm:ss'),NULL) outhospital_time from MRM_FIRST_PAGE where outhospital_time is null"
+                ]
+              }
+            ]
+          }
+        },
+        "writer": {
+          "name": "clickhousewriter",
+          "parameter": {
+            "column": ["outhospital_time"],
+            "connection": [
+              {
+                "jdbcUrl": "jdbc:clickhouse://10.158.2.15:8123/default",
+                "table": ["MRM_FIRST_PAGE"]
+              }
+            ],
+            "password": "123456",
+            "preSql": [],
+            "session": [],
+            "username": "default",
+            "writeMode": "insert"
+          }
+        }
+      }
+    ],
+    "setting": {
+      "speed": {
+        "channel": 1
+      }
+    }
+  }
+}

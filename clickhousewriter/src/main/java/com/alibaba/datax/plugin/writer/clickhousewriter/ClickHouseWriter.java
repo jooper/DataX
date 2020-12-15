@@ -38,7 +38,7 @@ public class ClickHouseWriter {
         private CommonRdbmsWriter.Job commonRdbmsWriterJob;
 
         @Override
-        public void preCheck(){
+        public void preCheck() {
             this.init();
             this.commonRdbmsWriterJob.writerPreCheck(this.originalConfig, DATABASE_TYPE);
         }
@@ -73,7 +73,7 @@ public class ClickHouseWriter {
 
     }
 
-    public static class Task extends Writer.Task  {
+    public static class Task extends Writer.Task {
         private static final Logger LOG = LoggerFactory
                 .getLogger(Task.class);
 
@@ -117,11 +117,12 @@ public class ClickHouseWriter {
             this.clickHouseDataSource = new BalancedClickhouseDataSource(this.jdbcUrl, withCredentials);
 
             BASIC_MESSAGE = String.format("jdbcUrl:[%s], DataSourceURL:%s ,table:[%s]",
-                    this.jdbcUrl,clickHouseDataSource.getAllClickhouseUrls(), this.table);
+                    this.jdbcUrl, clickHouseDataSource.getAllClickhouseUrls(), this.table);
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() {
+        }
 
 
         //TODO 这里可以弄个线程池，并实现更好的负载均衡策略
@@ -157,7 +158,7 @@ public class ClickHouseWriter {
             DBUtil.closeDBResources(null, null, connection);
         }
 
-        public void startWriteWithConnection(RecordReceiver recordReceiver,Connection connection) {
+        public void startWriteWithConnection(RecordReceiver recordReceiver, Connection connection) {
             // 用于写入数据的时候的类型根据目的表字段类型转换
             this.resultSetMetaData = DBUtil.getColumnMetaData(connection,
                     this.table, StringUtils.join(this.columns, ","));
@@ -233,7 +234,7 @@ public class ClickHouseWriter {
         }
 
         private void doBatchExecute(Connection connection, List<Record> buffer) {
-            doBatchInsert(connection,buffer);
+            doBatchInsert(connection, buffer);
         }
 
 
@@ -351,8 +352,11 @@ public class ClickHouseWriter {
                     if (null != utilDate) {
                         sqlTimestamp = new java.sql.Timestamp(
                                 utilDate.getTime());
+                        preparedStatement.setTimestamp(columnIndex + 1, sqlTimestamp);
+                    } else {
+                        preparedStatement.setNull(columnIndex + 1, Types.TIMESTAMP);
                     }
-                    preparedStatement.setTimestamp(columnIndex + 1, sqlTimestamp);
+
                     break;
 
                 case Types.BINARY:
@@ -368,13 +372,13 @@ public class ClickHouseWriter {
                     break;
 
                 case Types.BIT:
-                     preparedStatement.setString(columnIndex + 1, column.asString());
+                    preparedStatement.setString(columnIndex + 1, column.asString());
                     break;
 
                 case Types.ARRAY:
                     if (column != null) {
                         List<String> v = (List) column;
-                        String [] array = v.toArray(new String[v.size()]);
+                        String[] array = v.toArray(new String[v.size()]);
                         preparedStatement.setArray(columnIndex + 1,
                                 preparedStatement.getConnection().createArrayOf("string", array));
                     } else {
