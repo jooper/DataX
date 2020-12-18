@@ -321,8 +321,10 @@ public class ClickHouseWriter {
 
                     if (null != utilDate) {
                         sqlDate = new java.sql.Date(utilDate.getTime());
+                        preparedStatement.setDate(columnIndex + 1, sqlDate);
+                    } else {
+                        preparedStatement.setNull(columnIndex + 1, Types.DATE);
                     }
-                    preparedStatement.setDate(columnIndex + 1, sqlDate);
                     break;
 
                 case Types.TIME:
@@ -349,12 +351,12 @@ public class ClickHouseWriter {
                                 "TIMESTAMP 类型转换错误：[%s]", column));
                     }
 
-                    if (null != utilDate) {
+                    if (null == utilDate) {
+                        preparedStatement.setNull(columnIndex + 1, Types.TIMESTAMP);
+                    } else {
                         sqlTimestamp = new java.sql.Timestamp(
                                 utilDate.getTime());
                         preparedStatement.setTimestamp(columnIndex + 1, sqlTimestamp);
-                    } else {
-                        preparedStatement.setNull(columnIndex + 1, Types.TIMESTAMP);
                     }
 
                     break;

@@ -13,7 +13,7 @@
                 "jdbcUrl": ["jdbc:oracle:thin:@202.115.136.42:1521/dbm"],
                 "querySql":
                 [
-                  "select * from IPC_DIAG_SERVICE_D where rownum<201"
+                  "select d.* from ipc_drug_presc_d d join ipc_drug_presc_h h on d.drug_presc_h_id=h.id where charge_date >=to_date('2020-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')"
                 ]
               }
             ]
@@ -26,7 +26,7 @@
             "connection": [
               {
                 "jdbcUrl": "jdbc:clickhouse://10.158.2.15:8123/default",
-                "table": ["IPC_DIAG_SERVICE_D"]
+                "table": ["ipc_drug_presc_d"]
               }
             ],
             "password": "123456",

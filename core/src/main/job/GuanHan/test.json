@@ -1,0 +1,23 @@
+select hd2.hospital_area,
+(case '1'
+when '3' then
+hd2.id || '#' || dph.pharmacy_code
+else
+hd2.id
+end) dept_id,
+(case '1'
+when '3' then
+pwd.warehouse_cname
+else
+hd2.department_chinese_name
+end) dept_name,
+drugType.s_zyfylb_dm,
+dpd.total_amt
+from IPC_DRUG_PRESC_D dpd
+
+inner join IPC_DRUG_PRESC_H dph on dph.id = dpd.drug_presc_h_id
+inner join DRM_DICTIONARY dd on dd.id = dpd.drug_id
+inner join PUB_DRUG_TYPE drugType on dd.drug_type_code = drugType.drug_type_code
+inner join PUB_WAREHOUSE_DICT pwd on pwd.warehouse_code = dph.pharmacy_code
+inner join HRA00_DEPARTMENT hd
+left join HRA00_DEPARTMENT hd2on hd2.id = hd.ip_income_dept_id
